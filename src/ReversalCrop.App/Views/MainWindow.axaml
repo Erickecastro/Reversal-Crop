@@ -43,6 +43,14 @@
             <Setter Property="Background" Value="#4A91EA"/>
         </Style>
         <Style Selector="Button:pressed"><Setter Property="Background" Value="#303034"/></Style>
+        <Style Selector="RadioButton">
+            <Setter Property="Background" Value="#3B3B3F"/>
+            <Setter Property="Foreground" Value="#F6F5F4"/>
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="CornerRadius" Value="9"/>
+        </Style>
+        <Style Selector="RadioButton:pointerover"><Setter Property="Background" Value="#48484C"/></Style>
+        <Style Selector="RadioButton:checked"><Setter Property="Background" Value="#3584E4"/></Style>
 
         <Style Selector="TextBox">
             <Setter Property="Background" Value="#303034"/>
@@ -166,11 +174,11 @@
                                    FontWeight="Bold"
                                    Foreground="#A1A09D"/>
 
-                        <Grid ColumnDefinitions="*,*"
-                              ColumnSpacing="8">
-                            <Button Content="512 × 512" Click="Export512_Click"/>
-                            <Button Grid.Column="1"
-                                    Content="2508 × 2508" Click="Export2508_Click"/>
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
+                            <RadioButton Content="512 × 512" GroupName="ExportSize"
+                                         IsChecked="{Binding Export512Selected, Mode=TwoWay}"/>
+                            <RadioButton Grid.Column="1" Content="2508 × 2508" GroupName="ExportSize"
+                                         IsChecked="{Binding Export2508Selected, Mode=TwoWay}"/>
                         </Grid>
 
                         <TextBlock Text="PNG"

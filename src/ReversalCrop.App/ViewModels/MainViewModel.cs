@@ -33,6 +33,12 @@ public partial class MainViewModel : ViewModelBase
     [ObservableProperty]
     public partial double OffsetY { get; set; }
 
+    [ObservableProperty]
+    public partial bool Export512Selected { get; set; } = true;
+
+    [ObservableProperty]
+    public partial bool Export2508Selected { get; set; }
+
     public bool HasImage => PreviewImage is not null;
     public bool HasNoImage => _sourceBytes is null;
     public bool HasSourceImage => _sourceBytes is not null;
@@ -62,13 +68,30 @@ public partial class MainViewModel : ViewModelBase
     partial void OnOffsetXChanged(double value) => RefreshPreview();
     partial void OnOffsetYChanged(double value) => RefreshPreview();
 
+    partial void OnExport512SelectedChanged(bool value)
+    {
+        if (value)
+            Export2508Selected = false;
+    }
+
+    partial void OnExport2508SelectedChanged(bool value)
+    {
+        if (value)
+            Export512Selected = false;
+    }
+
     public void SetImage(byte[] bytes, string fileName)
     {
         _updating = true;
 
+        var previousCancellation = _previewCancellation;
+        _previewCancellation = null;
+        previousCancellation?.Cancel();
+
         _sourceBytes = bytes;
         FileName = fileName;
         StatusMessage = "";
+        PreviewImage = null;
 
         Zoom = 100;
         OffsetX = 0;

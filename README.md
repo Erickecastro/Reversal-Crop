@@ -9,6 +9,8 @@ Aplicativo desktop para enquadrar imagens e exportar ícones PNG com o perfil Re
 - Exportação PNG em 512 × 512 e 2508 × 2508.
 - Máscara Reversal com transparência e bordas arredondadas.
 
+Para exportar, abra uma imagem, ajuste o enquadramento, selecione uma resolução no painel e pressione **Exportar**. O seletor de destino só aparece nessa última etapa.
+
 ## Requisitos
 
 - .NET 10 SDK.

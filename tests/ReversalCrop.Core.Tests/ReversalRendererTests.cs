@@ -50,6 +50,56 @@ public class ReversalRendererTests
         Assert.Throws<ArgumentOutOfRangeException>(() => ReversalRenderer.RenderIconPng(source, 128, double.NaN));
     }
 
+    [Fact]
+    public void Horizontal_offset_moves_the_crop_in_the_expected_direction()
+    {
+        using var bitmap = new SKBitmap(64, 64, SKColorType.Rgba8888, SKAlphaType.Unpremul);
+        for (int y = 0; y < bitmap.Height; y++)
+        for (int x = 0; x < bitmap.Width; x++)
+            bitmap.SetPixel(x, y, x < 32 ? SKColors.Red : SKColors.Blue);
+
+        using var image = SKImage.FromBitmap(bitmap);
+        using var data = image.Encode(SKEncodedImageFormat.Png, 100);
+        using var left = SKBitmap.Decode(ReversalRenderer.RenderIconPng(data.ToArray(), 128, zoom: 2, offsetX: -100))!;
+        using var right = SKBitmap.Decode(ReversalRenderer.RenderIconPng(data.ToArray(), 128, zoom: 2, offsetX: 100))!;
+
+        SKColor leftCenter = left.GetPixel(64, 64);
+        SKColor rightCenter = right.GetPixel(64, 64);
+        Assert.True(leftCenter.Red > leftCenter.Blue);
+        Assert.True(rightCenter.Blue > rightCenter.Red);
+    }
+
+    [Fact]
+    public void Preview_and_export_share_the_same_profile_bounds()
+    {
+        byte[] source = CreatePng(64, 64, SKColors.Orange);
+        using var preview = SKBitmap.Decode(ReversalRenderer.RenderPreview(source))!;
+        using var export = SKBitmap.Decode(ReversalRenderer.RenderIconPng(source, 512, supersample: 4))!;
+
+        Assert.InRange(Math.Abs(preview.GetPixel(36, 256).Alpha - export.GetPixel(36, 256).Alpha), 0, 8);
+        Assert.Equal(preview.GetPixel(40, 256).Alpha, export.GetPixel(40, 256).Alpha);
+    }
+
+    [Fact]
+    public void Renderer_preserves_partial_alpha_from_source_image()
+    {
+        using var bitmap = new SKBitmap(64, 64, SKColorType.Rgba8888, SKAlphaType.Unpremul);
+        using (var canvas = new SKCanvas(bitmap))
+        {
+            canvas.Clear(SKColors.Transparent);
+            using var translucent = new SKPaint { Color = new SKColor(240, 40, 20, 128) };
+            canvas.DrawRect(new SKRect(16, 16, 48, 48), translucent);
+        }
+
+        using var image = SKImage.FromBitmap(bitmap);
+        using var data = image.Encode(SKEncodedImageFormat.Png, 100);
+        using var output = SKBitmap.Decode(ReversalRenderer.RenderIconPng(data.ToArray(), 128))!;
+        SKColor center = output.GetPixel(64, 64);
+
+        Assert.InRange(center.Alpha, 124, 132);
+        Assert.True(center.Red > center.Blue);
+    }
+
     private static byte[] CreatePng(int width, int height, SKColor color)
     {
         using var bitmap = new SKBitmap(width, height, SKColorType.Rgba8888, SKAlphaType.Unpremul);

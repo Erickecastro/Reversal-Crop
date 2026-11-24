@@ -43,14 +43,28 @@
             <Setter Property="Background" Value="#4A91EA"/>
         </Style>
         <Style Selector="Button:pressed"><Setter Property="Background" Value="#303034"/></Style>
-        <Style Selector="RadioButton">
+        <Style Selector="ToggleButton.export-size">
             <Setter Property="Background" Value="#3B3B3F"/>
             <Setter Property="Foreground" Value="#F6F5F4"/>
-            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="Padding" Value="8,7"/>
             <Setter Property="CornerRadius" Value="9"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Background="{TemplateBinding Background}"
+                            CornerRadius="{TemplateBinding CornerRadius}">
+                        <ContentPresenter Content="{TemplateBinding Content}"
+                                          Padding="{TemplateBinding Padding}"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter>
         </Style>
-        <Style Selector="RadioButton:pointerover"><Setter Property="Background" Value="#48484C"/></Style>
-        <Style Selector="RadioButton:checked"><Setter Property="Background" Value="#3584E4"/></Style>
+        <Style Selector="ToggleButton.export-size:pointerover"><Setter Property="Background" Value="#48484C"/></Style>
+        <Style Selector="ToggleButton.export-size:checked"><Setter Property="Background" Value="#3584E4"/></Style>
+        <Style Selector="ToggleButton.export-size:disabled"><Setter Property="Opacity" Value="0.55"/></Style>
 
         <Style Selector="TextBox">
             <Setter Property="Background" Value="#303034"/>
@@ -64,10 +78,8 @@
         <Style Selector="Slider /template/ Track"><Setter Property="Height" Value="6"/></Style>
     </Window.Styles>
 
-    <Grid RowDefinitions="*,54" ColumnDefinitions="*,276" Margin="12">
-        <Border Grid.Row="0" Grid.Column="0" Background="#1D1D20"
-                CornerRadius="12" BorderBrush="#39393D" BorderThickness="1" ClipToBounds="True">
-                <Grid>
+    <Grid RowDefinitions="*,54" ColumnDefinitions="*,276">
+        <Grid Grid.Row="0" Grid.Column="0" Background="#242426" ClipToBounds="True">
                     <Border IsVisible="{Binding HasImage}" Background="#2A2A2D">
                         <Border.Background>
                             <VisualBrush TileMode="Tile" DestinationRect="0,0,32,32" SourceRect="0,0,32,32" Stretch="None">
@@ -112,17 +124,12 @@
                                    TextAlignment="Center"
                                    Margin="0,-5,0,0"/>
                     </Button>
-                </Grid>
-        </Border>
+        </Grid>
 
-        <Border Grid.Row="0"
-                Grid.Column="1"
-                Background="#303034"
-                CornerRadius="12"
-                Padding="14"
-                Margin="10,0,0,0">
+        <Grid Grid.Row="0" Grid.RowSpan="2" Grid.Column="1"
+              Background="#303034" RowDefinitions="*,Auto">
 
-            <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" Margin="16,18">
                     <StackPanel Spacing="14">
 
                     <TextBlock Text="ENQUADRAMENTO"
@@ -174,12 +181,14 @@
                                    FontWeight="Bold"
                                    Foreground="#A1A09D"/>
 
-                        <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
-                            <RadioButton Content="512 × 512" GroupName="ExportSize"
-                                         IsChecked="{Binding Export512Selected, Mode=TwoWay}"/>
-                            <RadioButton Grid.Column="1" Content="2508 × 2508" GroupName="ExportSize"
-                                         IsChecked="{Binding Export2508Selected, Mode=TwoWay}"/>
-                        </Grid>
+                        <StackPanel Spacing="6">
+                            <ToggleButton Classes="export-size" Content="512 × 512"
+                                          HorizontalAlignment="Stretch"
+                                          IsChecked="{Binding Export512Selected, Mode=TwoWay}"/>
+                            <ToggleButton Classes="export-size" Content="2508 × 2508"
+                                          HorizontalAlignment="Stretch"
+                                          IsChecked="{Binding Export2508Selected, Mode=TwoWay}"/>
+                        </StackPanel>
 
                         <TextBlock Text="PNG"
                                    FontSize="11"
@@ -187,16 +196,19 @@
                     </StackPanel>
                 </StackPanel>
             </ScrollViewer>
-        </Border>
 
-        <Border Grid.Row="1" Grid.ColumnSpan="2" Background="#242426" Padding="4,8,0,0">
-
-            <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="10">
-                <Button Content="Abrir imagem" VerticalAlignment="Center" Click="OpenImage_Click"/>
-                <TextBlock Grid.Column="1" Text="{Binding FileName}" VerticalAlignment="Center" FontSize="12" Foreground="#C0BFBC"/>
-                <TextBlock Grid.Column="2" Text="{Binding StatusMessage}" VerticalAlignment="Center" FontSize="12" Foreground="#C0BFBC" Margin="8,0"/>
-                <Button Grid.Column="3" Content="Exportar" Classes="primary" VerticalAlignment="Center"
+            <StackPanel Grid.Row="1" Spacing="8" Margin="16,10,16,16">
+                <Button Content="Abrir imagem" HorizontalAlignment="Stretch"
+                        Click="OpenImage_Click"/>
+                <Button Content="Exportar" Classes="primary" HorizontalAlignment="Stretch"
                         IsEnabled="{Binding HasSourceImage}" Click="Export_Click"/>
+            </StackPanel>
+        </Grid>
+
+        <Border Grid.Row="1" Grid.Column="0" Background="#242426" Padding="18,8">
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                <TextBlock Text="{Binding FileName}" VerticalAlignment="Center" FontSize="12" Foreground="#C0BFBC"/>
+                <TextBlock Grid.Column="1" Text="{Binding StatusMessage}" VerticalAlignment="Center" FontSize="12" Foreground="#C0BFBC"/>
             </Grid>
         </Border>
     </Grid>

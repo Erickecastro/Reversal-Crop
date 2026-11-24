@@ -8,6 +8,8 @@ namespace ReversalCrop.App;
 
 public partial class App : Application
 {
+    public static string SystemFontFamily { get; set; } = "sans-serif";
+
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);

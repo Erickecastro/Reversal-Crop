@@ -1,8 +1,10 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:ReversalCrop.App.ViewModels"
+        xmlns:app="using:ReversalCrop.App"
         x:Class="ReversalCrop.App.Views.MainWindow"
         x:DataType="vm:MainViewModel"
+        FontFamily="{x:Static app:App.SystemFontFamily}"
         Title=""
         Width="980"
         Height="660"
@@ -16,7 +18,6 @@
     <Window.Styles>
         <Style Selector="TextBlock">
             <Setter Property="Foreground" Value="#F6F5F4"/>
-            <Setter Property="FontFamily" Value="Inter"/>
         </Style>
 
         <Style Selector="Button">

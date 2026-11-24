@@ -88,25 +88,17 @@ public partial class MainWindow : Window
         }
     }
 
-    private async void Export512_Click(
-        object? sender,
-        Avalonia.Interactivity.RoutedEventArgs e)
-    {
-        await ExportAsync(512, 4);
-    }
-
-    private async void Export2508_Click(
-        object? sender,
-        Avalonia.Interactivity.RoutedEventArgs e)
-    {
-        await ExportAsync(2508, 2);
-    }
-
     private async void Export_Click(
         object? sender,
         Avalonia.Interactivity.RoutedEventArgs e)
     {
-        await ExportAsync(2508, 2);
+        if (DataContext is not MainViewModel viewModel)
+            return;
+
+        if (viewModel.Export512Selected)
+            await ExportAsync(512, 4);
+        else
+            await ExportAsync(2508, 2);
     }
 
     private async Task ExportAsync(int target, int supersample)

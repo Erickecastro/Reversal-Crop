@@ -194,9 +194,10 @@ public static class ReversalRenderer
 
                 int index = (sy * width + sx) * 4;
 
-                r += image[index] * weight;
-                g += image[index + 1] * weight;
-                b += image[index + 2] * weight;
+                double sampleAlpha = image[index + 3] / 255.0;
+                r += image[index] * sampleAlpha * weight;
+                g += image[index + 1] * sampleAlpha * weight;
+                b += image[index + 2] * sampleAlpha * weight;
                 a += image[index + 3] * weight;
                 total += weight;
             }
@@ -208,10 +209,19 @@ public static class ReversalRenderer
             return;
         }
 
-        red = ToByte(r / total);
-        green = ToByte(g / total);
-        blue = ToByte(b / total);
-        alpha = ToByte(a / total);
+        double normalizedAlpha = Math.Clamp(a / total, 0, 255);
+        alpha = ToByte(normalizedAlpha);
+
+        if (normalizedAlpha <= 0.000001)
+        {
+            red = green = blue = 0;
+            return;
+        }
+
+        double unpremultiply = 255.0 / normalizedAlpha;
+        red = ToByte((r / total) * unpremultiply);
+        green = ToByte((g / total) * unpremultiply);
+        blue = ToByte((b / total) * unpremultiply);
     }
 
     private static double CubicWeight(double x)

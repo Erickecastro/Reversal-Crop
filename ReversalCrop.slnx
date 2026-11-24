@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/ReversalCrop.App/ReversalCrop.App.csproj" />
+    <Project Path="src/ReversalCrop.Core/ReversalCrop.Core.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/ReversalCrop.Core.Tests/ReversalCrop.Core.Tests.csproj" />
+  </Folder>
+</Solution>
